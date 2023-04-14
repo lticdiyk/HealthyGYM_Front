@@ -9,6 +9,7 @@ import Login from "./components/login";
 import Regi from "./components/regi";
 import Bbsanswer from "./components/Bbsanswer";
 import Bbsupdate from "./components/Bbsupdate";
+import Mypage from "./components/Mypage";
 
 import Multicampus from "./asset/multicampus.png";
 
@@ -39,7 +40,11 @@ function App() {
 
                 <li className="nav-item">
                   <Link className="nav-link" to="/pdslist">자료실</Link>
-                </li>   
+                </li>
+
+                <li className="nav-item">
+                  <Link className="nav-link" to="/mypage">마이페이지</Link>
+                </li>
 
 
               </ul>
@@ -69,6 +74,8 @@ function App() {
                 <Route path="/bbsanswer/:seq" exact element={<Bbsanswer />}></Route>
 
                 <Route path="/bbsupdate/:seq" exact element={<Bbsupdate />}></Route>
+
+                <Route path="/mypage/*" element={<Mypage />}></Route>
 
               </Routes>
 
