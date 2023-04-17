@@ -1,5 +1,7 @@
 import {Link, Routes, Route, NavLink} from "react-router-dom";
 import "./Mypage.css";
+import {useEffect, useState} from "react";
+import axios from "axios";
 function Nav() {
     return (
         <div>
@@ -21,16 +23,32 @@ function Nav() {
 }
 
 function Profile() {
+
+    const [member, setMember] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/members/findmember')
+            .then((response) => {
+                setMember(response.data);
+
+                // 데이터 확인용
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
     return (
         <div>
             <h2>Profile</h2>
             <ul>
                 <li>
                     <hr></hr>
-                    <div>프로필이미지(member)</div>
+                    <div>프로필 이미지 : {member.profile}</div>
                 </li>
                 <li>
-                    <div>헬린이123(member)</div>
+                    <div>닉네임 : {member.nickname}</div>
                 </li>
                 <li><Link to="/mypage/follower">팔로워 0(follow)</Link></li>
                 <li><Link to="/mypage/following">팔로잉 0(follow)</Link></li>
@@ -47,16 +65,32 @@ function Profile() {
 }
 
 function Bodycom() {
+
+    const [member, setMember] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:3000/members/findmember')
+            .then((response) => {
+                setMember(response.data);
+
+                // 데이터 확인용
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
     return (
         <div>
             <h2>Bodycom</h2>
             <ul>
                 <li>
                     <hr></hr>
-                    <div>프로필이미지(member)</div>
+                    <div>프로필 이미지 : {member.profile}</div>
                 </li>
                 <li>
-                    <div>헬린이123(member)</div>
+                    <div>닉네임 : {member.nickname}</div>
                 </li>
                 <li><Link to="/mypage/follower">팔로워 0(follow)</Link></li>
                 <li><Link to="/mypage/following">팔로잉 0(follow)</Link></li>
@@ -88,15 +122,188 @@ function Mywrite() {
     )
 }
 
+function EditProfile() {
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:3000/members/findmember")
+            .then((response) => {
+                setEmail(response.data.email);
+                setProfile(response.data.profile);
+                setNickname(response.data.nickname);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
+    useEffect(() => {
+        axios
+            .get("http://localhost:3000/members/findmemberinfo")
+            .then((response) => {
+                setName(response.data.name);
+                setAge(response.data.age);
+                setGender(response.data.gender);
+                setPhone(response.data.phone);
+                setMbti(response.data.mbti);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [nickname, setNickname] = useState('');
+    const [gender, setGender] = useState('');
+    const [age, setAge] = useState('');
+    const [phone, setPhone] = useState('');
+    const [mbti, setMbti] = useState('');
+    const [profile, setProfile] = useState('');
+
+    const handleNameChange = (event) => {
+        setName(event.target.value);
+    }
+
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    }
+
+    const handleNicknameChange = (event) => {
+        setNickname(event.target.value);
+    }
+
+    const handleGenderChange = (event) => {
+        setGender(event.target.value);
+    }
+
+    const handleAgeChange = (event) => {
+        setAge(event.target.value);
+    }
+
+    const handlePhoneChange = (event) => {
+        setPhone(event.target.value);
+    }
+
+    const handleMbtiChange = (event) => {
+        setMbti(event.target.value);
+    }
+
+    const handleProfileChange = (event) => {
+        setProfile(event.target.value);
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        axios.put('http://localhost:3000/members/updatemember', {
+            email: email,
+            nickname: nickname,
+            gender: gender,
+            name: name,
+            age: age,
+            phone: phone,
+            mbti: mbti,
+            profile: profile
+        })
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <label>
+                이메일:
+                <input type="email" value={email} onChange={handleEmailChange} />
+            </label>
+            <label>
+                별명:
+                <input type="text" value={nickname} onChange={handleNicknameChange} />
+            </label>
+            <fieldset>
+                <legend>성별:</legend>
+                <label>
+                    <input type="radio" name="gender" value="1" checked={gender === "1"} onChange={handleGenderChange} />
+                    남성
+                </label>
+                <label>
+                    <input type="radio" name="gender" value="0" checked={gender === "0"} onChange={handleGenderChange} />
+                    여성
+                </label>
+            </fieldset>
+            <label>
+                이름:
+                <input type="text" value={name} onChange={handleNameChange} />
+            </label>
+            <label>
+                나이:
+                <input type="text" value={age} onChange={handleAgeChange} />
+            </label>
+            <label>
+                전화번호:
+                <input type="text" value={phone} onChange={handlePhoneChange} />
+            </label>
+            <label>
+                Mbti:
+                <select value={mbti} onChange={handleMbtiChange}>
+                    <option value="ISTJ">ISTJ</option>
+                    <option value="ISFJ">ISFJ</option>
+                    <option value="INFJ">INFJ</option>
+                    <option value="INTJ">INTJ</option>
+                    <option value="ISTP">ISTP</option>
+                    <option value="ISFP">ISFP</option>
+                    <option value="INFP">INFP</option>
+                    <option value="INTP">INTP</option>
+                    <option value="ESTP">ESTP</option>
+                    <option value="ESFP">ESFP</option>
+                    <option value="ENFP">ENFP</option>
+                    <option value="ENTP">ENTP</option>
+                    <option value="ESTJ">ESTJ</option>
+                    <option value="ESFJ">ESFJ</option>
+                    <option value="ENFJ">ENFJ</option>
+                    <option value="ENTJ">ENTJ</option>
+                </select>
+            </label>
+            <label>
+                프로필 이미지:
+                <input type="text" value={profile} onChange={handleProfileChange} />
+            </label>
+            <button type="submit">수정하기</button>
+        </form>
+    );
+}
+
+function Pwdchange() {
+    return (
+        <div>
+            <h2>비밀번호 변경</h2>
+            <ul>
+                <li>
+                    <hr></hr>
+                    <div><h3>Pwdchange</h3></div>
+
+                </li>
+            </ul>
+        </div>
+    )
+}
+
 function Setting() {
     return (
         <div>
             <hr></hr>
             <ul>
-                <li><Link to="/mypage/setting">회원정보 수정</Link></li>
+                <li><Link to="/mypage/setting/editprofile">회원정보 수정</Link></li>
                 <li><Link to="/mypage/setting/pwdchange">비밀번호 변경</Link></li>
             </ul>
-            Setting...
+            <Routes>
+                <Route path="editprofile" element={<EditProfile/>}></Route>
+                <Route path="pwdchange" element={<Pwdchange/>}></Route>
+            </Routes>
         </div>
     )
 }
