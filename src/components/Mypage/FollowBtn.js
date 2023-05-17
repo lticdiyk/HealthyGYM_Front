@@ -3,7 +3,7 @@ import axios from '../../utils/CustomAxios';
 import "./MypageCss/ProfileCard.css";
 
 // 팔로잉, 팔로우 버튼 (로그인한 유저와 팔로우 관계 확인 + 팔로우, 언팔로우 기능)
-function FollowBtn({token, foltarget}) {
+function FollowBtn({foltarget}) {
 
     const authToken = localStorage.getItem("memberseq");
     const newtoken = useMemo(() => ({memberseq: authToken}), [authToken]);
@@ -47,7 +47,7 @@ function FollowBtn({token, foltarget}) {
         if(userFollow === false){
 
             const requestBody = {
-                memberseq: token.memberseq,
+                memberseq: newtoken.memberseq,
                 foltarget: foltarget,
             };
 
@@ -62,7 +62,7 @@ function FollowBtn({token, foltarget}) {
         } else {
 
             const requestBody = {
-                memberseq: token.memberseq,
+                memberseq: newtoken.memberseq,
                 foltarget: foltarget,
             };
 
